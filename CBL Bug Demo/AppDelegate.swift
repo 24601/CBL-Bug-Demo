@@ -13,9 +13,50 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
 
     var window: UIWindow?
 
+    var cblDatabase: CBLDatabase?
+    var cblManager: CBLManager?
+
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
+        
+        
+        self.cblManager = CBLManager.sharedInstance()
+        
+        var error: NSError?
+        self.cblDatabase = self.cblManager!.databaseNamed("cbl-bug-demo-db", error: &error)
+        if self.cblDatabase == nil {
+            println("Error creating or getting cblDatabase")
+            println(error)
+        }
+        
+        
+        // register classes
+        
+        let factory = self.cblDatabase!.modelFactory
+        
+        factory!.registerClass(BMArbitraryObject.self, forDocumentType: "BMArbitraryObject")
+        
+        
+        
+        self.cblDatabase!.viewNamed("arbitraryObjects").setMapBlock( {
+            (doc, emit) in
+            
+            
+            if(doc["type"] != nil && doc["type"] as! NSString == "BMArbitraryObject")
+            {
+                
+                
+                        emit(doc["_id"]!, doc)
+                
+                
+            }
+            
+            },version: "2")
+        
+        
+        
+        
         let splitViewController = self.window!.rootViewController as! UISplitViewController
         let navigationController = splitViewController.viewControllers[splitViewController.viewControllers.count-1] as! UINavigationController
         navigationController.topViewController.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem()

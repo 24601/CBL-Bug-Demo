@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import FXForms
 
 class DetailViewController: UIViewController {
 
@@ -20,14 +21,29 @@ class DetailViewController: UIViewController {
         }
     }
 
+    
     func configureView() {
         // Update the user interface for the detail item.
-        if let detail: AnyObject = self.detailItem {
-            if let label = self.detailDescriptionLabel {
-                label.text = detail.description
-            }
+        
+        self.title=""
+        
+        if(self.detailItem != nil)
+        {
+            var caseVc = FXFormViewController()
+            
+            caseVc.formController.form = self.detailItem as! FXForm
+            
+            caseVc.title = "Some Arbitrary Item"
+            
+            
+            
+            self.navigationController?.pushViewController(caseVc, animated: true);
+            
         }
+        
     }
+    
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
